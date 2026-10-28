@@ -1,0 +1,572 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Birthday Letter for You 💜</title>
+
+<style>
+/* GENERAL DESIGN */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: radial-gradient(circle at top, #35104f, #130b1b 60%, #050407);
+    color: white;
+    font-family: Georgia, serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    color: #e0b3ff;
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
+    text-shadow: 0 0 15px #b34dff;
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    color: #e4c9f7;
+    margin-bottom: 45px;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* FLOATING HEARTS */
+.heart {
+    position: fixed;
+    bottom: -40px;
+    color: #d18aff;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 1;
+    animation: floatUp linear forwards;
+    text-shadow: 0 0 12px #a83dff;
+}
+
+@keyframes floatUp {
+    from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* NAME CHECK GATE */
+.name-gate {
+    max-width: 420px;
+    margin: 0 auto 30px;
+    padding: 25px 20px;
+    background: rgba(28, 12, 43, 0.88);
+    border: 1px solid #c38be8;
+    border-radius: 18px;
+    box-shadow: 0 0 22px #9e44d866;
+}
+
+.name-gate p {
+    color: #e4c9f7;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.name-gate input {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 25px;
+    border: 1px solid #d9a5ff;
+    background: #100817;
+    color: white;
+    outline: none;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.name-gate input:focus {
+    box-shadow: 0 0 12px #b56be0;
+}
+
+#nameMessage {
+    min-height: 25px;
+    color: #e0b3ff;
+    margin-top: 12px;
+    font-size: 0.95rem;
+}
+
+.birthday-content {
+    display: none;
+}
+
+.birthday-content.unlocked {
+    display: block;
+    animation: appear 0.7s ease;
+}
+
+/* ENVELOPE */
+.envelope-wrapper {
+    width: 280px;
+    height: 190px;
+    margin: 0 auto 35px;
+    position: relative;
+    cursor: pointer;
+    perspective: 1000px;
+    filter: drop-shadow(0 0 20px #8e36c9);
+}
+
+.envelope {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #7b35a8;
+    border: 2px solid #d9a5ff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.envelope::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-left: 138px solid #542171;
+    border-top: 94px solid transparent;
+    border-bottom: 0 solid transparent;
+    z-index: 2;
+}
+
+.envelope::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-right: 138px solid #692b91;
+    border-top: 94px solid transparent;
+    border-bottom: 0 solid transparent;
+    z-index: 2;
+}
+
+.flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 138px solid transparent;
+    border-right: 138px solid transparent;
+    border-top: 110px solid #b56be0;
+    transform-origin: top;
+    transition: transform 0.7s ease;
+    z-index: 4;
+}
+
+.seal {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 48px;
+    background: #1b0d27;
+    border: 2px solid #e6c5ff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    z-index: 5;
+    transition: opacity 0.3s;
+}
+
+.envelope-wrapper.open .flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+.envelope-wrapper.open .seal {
+    opacity: 0;
+}
+
+/* LETTER */
+.letter {
+    display: none;
+    background: linear-gradient(145deg, #fff7ff, #ead6fa);
+    color: #351447;
+    padding: 30px 25px;
+    border: 3px solid #c38be8;
+    border-radius: 15px;
+    box-shadow: 0 0 30px #a64dff66;
+    text-align: left;
+    line-height: 1.8;
+    animation: appear 0.8s ease;
+    margin: 0 auto 25px;
+}
+
+.letter.show {
+    display: block;
+}
+
+.letter h2 {
+    color: #7b2aa5;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.letter p {
+    margin-bottom: 15px;
+    overflow-wrap: anywhere;
+}
+
+.signature {
+    color: #8b35b8;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 25px;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* BUTTONS */
+button {
+    background: #8e44bd;
+    color: white;
+    border: 1px solid #e0b3ff;
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 8px;
+    box-shadow: 0 0 15px #9e44d866;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #b56be0;
+    transform: scale(1.05);
+}
+
+.instruction {
+    color: #d8b9ed;
+    font-size: 0.9rem;
+    margin-top: 12px;
+}
+
+.footer {
+    color: #a88bbd;
+    font-size: 0.8rem;
+    margin-top: 35px;
+}
+
+/* MOBILE */
+@media (max-width: 400px) {
+    .envelope-wrapper {
+        width: 250px;
+        height: 170px;
+    }
+
+    .flap {
+        border-left-width: 123px;
+        border-right-width: 123px;
+        border-top-width: 100px;
+    }
+
+    .envelope::before {
+        border-left-width: 123px;
+        border-top-width: 84px;
+    }
+
+    .envelope::after {
+        border-right-width: 123px;
+        border-top-width: 84px;
+    }
+
+    .letter {
+        padding: 22px 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Happy Birthday Jennylyn! 💜</h1>
+
+    <p class="subtitle">
+        A little letter made with love, just for you.<br>
+        But first... let's see if you know who this letter is for. ♡
+    </p>
+
+    <!-- NAME UNLOCK SCREEN -->
+    <div class="name-gate" id="nameGate">
+        <p>
+            Before you open your surprise... 💌<br>
+            <strong>What's the birthday girl's name?</strong>
+        </p>
+
+        <input
+            type="text"
+            id="nameInput"
+            placeholder="Type your name here..."
+            autocomplete="off"
+            aria-label="Birthday girl's name"
+        >
+
+        <button type="button" onclick="checkName()">
+            Unlock my letter ♡
+        </button>
+
+        <p id="nameMessage" aria-live="polite">
+            Hint: it's your own name, cutie! 💜
+        </p>
+    </div>
+
+    <!-- HIDDEN UNTIL THE CORRECT NAME IS ENTERED -->
+    <div class="birthday-content" id="birthdayContent">
+
+        <div
+            class="envelope-wrapper"
+            id="envelope"
+            onclick="openLetter()"
+            role="button"
+            tabindex="0"
+            aria-label="Open birthday letter"
+        >
+            <div class="envelope"></div>
+            <div class="flap"></div>
+            <div class="seal">♥</div>
+        </div>
+
+        <p class="instruction" id="instruction">
+            ♡ Tap the envelope to open your letter ♡
+        </p>
+
+        <!-- YOUR BIRTHDAY LETTER -->
+        <div class="letter" id="letter">
+            <h2>To My Dear Cutiepie ♡</h2>
+
+            <p>
+                Happy Birthday, Chinchin ko!! Laham na laham kita.☺️💕☝️
+            </p>
+
+            <p>
+                Hindi ko man 'to always nasasabi, but sobrang saya ko talaga kapag ikaw kasama ko. I really appreciate all the times na nag-uusap tayo about life, nagsha-share ng things about each other, and of course, yung mga silly jokes natin HAHAHAHA. Sobrang vina-value ko talaga yung presence mo, and I'm genuinely so thankful na isa ka sa mga naging friends ko kasi I can't really imagine myself kung hindi kita naging friend. You made going to school a lot more exciting, and I always look forward to seeing you every day. Isa ka sa mga reasons why I keep going to school despite how draining the environment can be. Somehow, you make everything feel a little lighter. Nalilimutan ko yung stress kapag kausap kita kasi even the simplest things become funny kapag ikaw kasama. And I love, love, LOVE you for it. Your jolly personality is one of the things I adore about you.
+            </p>
+
+            <p>
+                But aside from wishing you happiness on your birthday, I also wish na matutunan mong piliin yung sarili mo this time, ha, baby? Kasi, girl, napaka-selfless mong tao. Kahit nasasaktan ka na, mas iniisip mo pa rin yung feelings ng ibang tao kaysa sa sarili mo. You keep trying to understand people even when they're the ones hurting you, and I hope you realize na you deserve that same understanding and love that you keep giving to everyone else. Please have some self-respect din, okay, baby?(⁠￣⁠ヘ⁠￣⁠;⁠) Kasi, TBH, sobrang ganda mo na nga, ang down-to-earth pa ng personality mo. Sobrang swerte naming mga nakakakilala sa'yo kasi we get to experience being loved and acknowledged by a literal DYOSA?!?!? Ay juicecolored na lang talaga sa mga nagfu-fumble sa'yo. Their loss, honestly.
+            </p>
+
+            <p>
+                And please, don't ever be afraid na magiging mag-isa ka if ever you decide to walk away from a situation that no longer makes you happy, ha? Kapag iniwan mo na 'yang si Debone, charot. Pero seryoso, we're always here for you. Isang tawag mo lang, and we'll be right there. Sasamahan ka namin, i-di-distract ka namin, makikinig kami sa'yo, and we'll do whatever we can to make things a little easier for you. You don't have to go through everything alone. Just please, don't settle for a situation that keeps hurting you just because you're scared of losing someone. There's so much more to life te and madami kapang makikilala, you don't have to keep yourself stuck with someone who doesn't appreciate the love, effort, and understanding that you give. You deserve a love that makes you feel secure, appreciated, and chosen, too. You deserve to receive the same love that you so freely give to other people.♡
+            </p>
+
+            <p>
+                Kaya sana idol marealize mo din yung worth mo, see yourself the way we see you. I hope you'll realize how beautiful, lovable, and amazing you are, and that you never have to make yourself smaller just to keep someone in your life. You are so much more than how other people treat you, and I hope you never forget that. I want you to be genuinely happy, to experience the kind of love you deserve, Always remember na you have people who will choose you, support you, and stay by your side, okay? Kami yornz okay?
+            </p>
+
+            <p>
+                I LOVE YOU SO MUCH, JENNYCUTIEPIEBABY123 KO!!!☺️☝️💗
+            </p>
+
+            <p>
+                What I love most about you is yung pagiging jolly mong tao. Lagi kang naka-smile, and sobrang cute mo pa naman ngumiti, na para bang angel na nakangiti? Angel baby ko??? Your smile is so contagious na parang ang hirap hindi ngumiti kapag ikaw kasama. Tapos ikaw lamba sobrang hearted, mukha lang dragon, pero sobrang soft talaga??? Charot loveu baby. You have such a gentle heart, and I love how you still manage to be kind and understanding kahit sa mga times na kinucutepal kana ng mundo. You have so much love to give, and I hope you never lose that beautiful part of yourself.
+            </p>
+
+            <p>
+                My dream for you is to see you genuinely happy and at peace with yourself. I hope life gives you all the good things you deserve, and that you get to experience the kind of love and happiness that you always give to others. You deserve the world, baby, and I hope life treats you as gently as your heart treats everyone else. Laham na laham kita po. 😘💜🖤
+            </p>
+
+            <p class="signature">
+                With love,<br>
+                JULIAN♡
+            </p>
+        </div>
+
+        <button id="letterButton" onclick="toggleLetter()">
+            💌 Open the Letter
+        </button>
+
+        <button onclick="makeHearts()">
+            💜 More Hearts!
+        </button>
+
+        <div class="footer">
+            Made with ♡, purple hearts, and a little magic.
+        </div>
+
+    </div><!-- end birthday-content -->
+
+</div>
+
+<script>
+// CHECK THE BIRTHDAY GIRL'S NAME
+const correctName = "Jennylyn";
+
+const wrongNameMessages = [
+    "Hmm... are you sure, cutie? Try again! 💜",
+    "Hehe, really? What's her name? 🖤",
+    "Nope, the secret letter is still locked! 💌",
+    "Think again, birthday girl. You know this one. ♡",
+    "Almost... okay, maybe not! Try one more time. 😼💜"
+];
+
+let wrongNameCount = 0;
+
+function checkName() {
+    const input = document.getElementById("nameInput");
+    const message = document.getElementById("nameMessage");
+    const typedName = input.value.trim().toLowerCase();
+
+    if (typedName === correctName.toLowerCase()) {
+        message.textContent =
+            "YAY!! That's you! Your little surprise is unlocked! 💜🖤";
+
+        document.getElementById("nameGate").style.display = "none";
+        document.getElementById("birthdayContent")
+            .classList.add("unlocked");
+
+        makeHearts();
+
+    } else if (typedName === "") {
+        message.textContent =
+            "Psst... you have to type a name first, cutie! ♡";
+
+        input.focus();
+
+    } else {
+        message.textContent =
+            wrongNameMessages[
+                wrongNameCount % wrongNameMessages.length
+            ];
+
+        wrongNameCount++;
+        input.value = "";
+        input.focus();
+    }
+}
+
+// PRESS ENTER TO UNLOCK
+document.getElementById("nameInput")
+    .addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            checkName();
+        }
+    });
+
+// CREATE FLOATING HEARTS
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+
+    const symbols = ["♥", "♡", "💜", "🖤", "✦"];
+
+    heart.textContent =
+        symbols[Math.floor(Math.random() * symbols.length)];
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (12 + Math.random() * 22) + "px";
+
+    const duration = 5 + Math.random() * 6;
+    heart.style.animationDuration = duration + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, duration * 1000);
+}
+
+// KEEP HEARTS FLOATING
+setInterval(createHeart, 350);
+
+// OPEN THE LETTER
+function openLetter() {
+    const envelope = document.getElementById("envelope");
+    const letter = document.getElementById("letter");
+    const instruction = document.getElementById("instruction");
+    const button = document.getElementById("letterButton");
+
+    envelope.classList.add("open");
+    letter.classList.add("show");
+
+    instruction.textContent =
+        "♡ A little birthday message for you ♡";
+
+    button.textContent = "💌 Fold the Letter";
+
+    makeHearts();
+}
+
+// OPEN OR CLOSE THE LETTER
+function toggleLetter() {
+    const envelope = document.getElementById("envelope");
+    const letter = document.getElementById("letter");
+    const instruction = document.getElementById("instruction");
+    const button = document.getElementById("letterButton");
+
+    const isOpen = letter.classList.contains("show");
+
+    if (isOpen) {
+        envelope.classList.remove("open");
+        letter.classList.remove("show");
+
+        instruction.textContent =
+            "♡ Tap the envelope to open your letter ♡";
+
+        button.textContent = "💌 Open the Letter";
+
+    } else {
+        openLetter();
+    }
+}
+
+// CREATE A BURST OF HEARTS
+function makeHearts() {
+    for (let i = 0; i < 18; i++) {
+        setTimeout(createHeart, i * 70);
+    }
+}
+
+// ALLOW KEYBOARD USERS TO OPEN THE ENVELOPE
+document.getElementById("envelope")
+    .addEventListener("keydown", function(event) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openLetter();
+        }
+    });
+</script>
+
+</body>
+</html>
